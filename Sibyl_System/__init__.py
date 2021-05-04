@@ -19,9 +19,9 @@ logging.basicConfig(
 
 ENV = bool(os.environ.get("ENV", False))
 if ENV:
-    API_ID_KEY = int(os.environ.get("2070907")
-    API_HASH_KEY = os.environ.get("e1d077ec3bdf540193afdb4d846bcfb2")
-    STRING_SESSION = os.environ.get("1BJWap1sBu1IDhTkbUvudZNZSirObKkNYmKQmUjAlBt3CYxHBh7hjIWSslg-aXrqL05feoZlUoV0yna4Mv3Spv7aBMYjmVDE9Wj2iapS7Vavc1ORKrqUaECeeFlwzgXEm2wIDJSW8VQCz-gxtlUMrLYOqMaSzXKVAlv4cQBw4rfRp_Kj4RnT3f6eRF-vcWZ8-2cmJj6p9UdEA1bS3kpsIMzgrykyVaobl9fNyrpB7KJ80aNVtCQ5e6ColZ7MFkMhRsyoQAw44hReKF4g8hBgdCKE81ENliw2xBIp79BEEFcGbIzHu3k9meTaoV-hVqM-nu5HoFF5xsu_lKW8czmsriVg8qTYRTxo=")
+    API_ID_KEY = int(os.environ.get("API_ID_KEY"))
+    API_HASH_KEY = os.environ.get("API_HASH_KEY")
+    STRING_SESSION = os.environ.get("STRING_SESSION")
     HEROKU_API_KEY = os.environ.get("HEROKU_API_KEY")
     HEROKU_APP_NAME = os.environ.get("HEROKU_APP_NAME")
     RAW_SIBYL = os.environ.get("SIBYL", "")
