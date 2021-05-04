@@ -52,13 +52,13 @@ async def scan(event):
         if not message:
             await event.reply("Failed to get data from url")
             return
-        if message.from_id.user_id in ENFORCERS:
+        if message.sender_id in ENFORCERS:
             return
         msg = await System.send_message(
             Sibyl_logs,
             scan_request_string.format(
                 enforcer=executor,
-                spammer=message.from_id.user_id,
+                spammer=message.sender_id,
                 chat=f"https://t.me/{data[0]}/{data[1]}",
                 message=message.text,
                 reason=reason.split(" ", 1)[1].strip(),
@@ -70,16 +70,16 @@ async def scan(event):
     if "o" in flags.keys():
         if replied.fwd_from:
             reply = replied.fwd_from
-            target = reply.from_id.user_id
-            if reply.from_id.user_id in ENFORCERS or reply.from_id.user_id in SIBYL:
+            target = reply.sender_id
+            if reply.sender_id in ENFORCERS or reply.sender_id in SIBYL:
                 return
-            if not reply.from_id.user_id:
+            if not reply.sender_id:
                 await event.reply("Cannot get user ID.")
                 return
             if reply.from_name:
-                sender = f"[{reply.from_name}](tg://user?id={reply.from_id.user_id})"
+                sender = f"[{reply.from_name}](tg://user?id={reply.sender_id})"
             else:
-                sender = f"[{reply.from_id.user_id}](tg://user?id={reply.from_id.user_id})"
+                sender = f"[{reply.sender_id}](tg://user?id={reply.sender_id})"
     else:
         if replied.sender.id in ENFORCERS:
             return
@@ -99,7 +99,7 @@ async def scan(event):
         if event.chat.username
         else f"t.me/c/{event.chat.id}/{event.message.id}"
     )
-    await event.reply("**Scan request has been sent to Arcane base.**")
+    await event.reply("Connecting to Sibyl for a cymatic scan.")
     if req_proof and req_user:
         await replied.forward_to(Sibyl_logs)
         await System.gban(
@@ -135,16 +135,11 @@ async def revive(event):
     except IndexError:
         return
     a = await event.reply("Reverting bans..")
-    if not user_id.isnumeric():
-        await a.edit('Invalid id')
-        return
-    if not (await System.ungban(int(user_id), f" By //{(await event.get_sender()).id}")):
-        await a.edit('User is not gbanned.')
-        return
+    await System.ungban(user_id, f" By //{(await event.get_sender()).id}")
     await a.edit("Revert request sent to sibyl. This might take 10minutes or so.")
 
 
-@System.on(system_cmd(pattern=r"sibyl logs"))
+@System.on(system_cmd(pattern=r"logs"))
 async def logs(event):
     await System.send_file(event.chat_id, "log.txt")
 
@@ -232,7 +227,7 @@ async def approve(event):
             if orig:
                 await System.send_message(
                     orig.group(1),
-                    "**Arcane detected maliciousness on scanned user.**\n\n• Action: **Enforcing GBan**",
+                    "User is a target for enforcement action.\nEnforcement Mode: Lethal Eliminator",
                     reply_to=int(orig.group(2)),
                 )
 
@@ -242,7 +237,7 @@ async def reject(event):
     # print('Trying OmO')
     replied = await event.get_reply_message()
     me = await System.get_me()
-    if replied.from_id.user_id == me.id:
+    if replied.sender_id == me.id:
         # print('Matching UwU')
         match = re.match(r"\$(SCAN|AUTO(SCAN)?)", replied.text)
         if match:
@@ -271,7 +266,7 @@ help_plus = """
 Here is the help for **Main**:
 
 Commands:
-    `scan` - Reply to a message WITH reason to send a request to Inspectors/Arcane for judgement
+    `scan` - Reply to a message WITH reason to send a request to Inspectors/Sibyl for judgement
     `approve` - Approve a scan request (Only works in Sibyl System Base)
     `revert` or `revive` or `restore` - Ungban ID
     `qproof` - Get quick proof from database for given user id
